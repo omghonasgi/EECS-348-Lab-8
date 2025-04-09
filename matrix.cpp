@@ -18,34 +18,41 @@ public:
         return nums;
     }
 
-    static Matrix read_from_file (string filename){
+    static Matrix read_from_file(string filename) {
     vector<vector<int> > data;
-    fstream myfile (filename);
-    if (myfile.is_open()){
+    fstream myfile(filename);
+    if (myfile.is_open()) {
         string str_size;
-        if (getline(myfile, str_size)){
+        if (getline(myfile, str_size)) {
             int size = stoi(str_size);
-            string blank_line;
-            getline(myfile, blank_line); 
-            for (size_t i = 0; i < size*2; ++i){
-                string line; 
-                if (getline(myfile, line)){
-                    stringstream ss(line);
-                    vector<int> row;
-                    int value;
+            int row_count = 0;
+            string line;
 
-                    while(ss >> value){
-                        row.push_back(value);
-                    } 
+            while (row_count < size * 2 && getline(myfile, line)) {
+                if (line.empty()) {
+                    continue;  // skip blank lines
+                }
 
+                stringstream ss(line);
+                vector<int> row;
+                int value;
+
+                while (ss >> value) {
+                    row.push_back(value);
+                }
+
+                // Only count and push non-empty rows
+                if (!row.empty()) {
                     data.push_back(row);
+                    row_count++;
                 }
             }
-        myfile.close();
         }
+        myfile.close();
     }
     return Matrix(data);
 }
+
    
     Matrix operator+(const Matrix &rhs) const{
         std::vector<std::vector<int> > data;
@@ -198,36 +205,45 @@ int main() {
     Matrix mat2(m2);
 
     // print two matrices to ensure proper object creation
+    cout << "1. Read values from a file into the matrix" << endl;
+    cout << "Matrix 1: " << endl;
     mat1.print_matrix();
     cout<<endl;
+    cout << "Matrix 2: " << endl;
     mat2.print_matrix();
     cout<<endl;
 
     // 2. Add two matrices and display the result
+    cout << "2. Add two matrices and display the result. Add matrix 1 and matrix 2" << endl;
     Matrix mat3 = mat1 + mat2;
     mat3.print_matrix();
     cout<<endl;
 
     // 3. Multiply two matrices and display the result
+    cout << "3. Multiply two matrices and display the result. Multiply matrix 1 and matrix 2" << endl;
     Matrix mat4 = mat1 * mat2;
     mat4.print_matrix();
     cout<<endl;
 
     // 4. Get the sum of matrix diagonal elements
+    cout << "4. Get the sum of matrix diagonal elements. Add up the diagonals of matrix 1." << endl;
     cout << mat1.sum_diagonal_major() + mat1.sum_diagonal_minor() << endl;
     cout<<endl;
 
     // 5. Swap matrix rows and display the result
+    cout << "5. Swap matrix rows and display the result. Swap index rows 1 and 2 on matrix 1" << endl;
     mat1.swap_rows(1, 2); // swap row indices 1 and 2
     mat1.print_matrix();
     cout<<endl;
 
     // 6. Swap matrix columns and display the result
+     cout << "6. Swap matrix columns and display the result. Swap index columns 1 and 2 on matrix 1" << endl;
     mat2.swap_cols(1, 2); // swap column indices 1 and 2
     mat2.print_matrix();
     cout<<endl;
 
-    // 7. Update matrix rows and display the result
+    // 7. Update matrix rows and display the result. Update row index 1, column index 2, of matrix 1 to 17
+    cout << "7. Update matrix rows and display the result. Update row index 1, column index 2, of matrix 1 to 17" << endl;
     update_matrix(1, 2, 17, mat1); // update row index 1, column index 2, of matrix 1 to 17
     mat1.print_matrix();
 
